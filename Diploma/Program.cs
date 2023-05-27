@@ -32,11 +32,11 @@ void RegisterServices(IServiceCollection services)
 {
     var builder = new MySqlConnectionStringBuilder
     {
-        Server = "cfif31.ru",
+        Server = "localhost",
         Port = 3306,
-        UserID = "ISPr22-32_ChekriginKA",
-        Password = "ISPr22-32_ChekriginKA",
-        Database = "ISPr22-32_ChekriginKA_Diplom_2",
+        UserID = "localhost",
+        Password = null,
+        Database = "diplom",
         CharacterSet = "utf8"
     };
 
