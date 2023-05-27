@@ -43,10 +43,18 @@ namespace Diploma.Controllers
             return await orders.ToListAsync();
         }
 
+        [Authorize]
         [HttpGet("Analytics")]
         public async Task<ActionResult<List<SupplyAnalyticDto>>> GetAnalytics()
         {
+            var user = await GetUser();
+
+            if (user == null)
+                return NotFound();
+
             var supplies = await _efModel.Orders
+                .Include(u => u.User)
+                .Where(u => u.User.Id == user.Id)
                 .GroupBy(x => new { x.DateTime.Year, x.DateTime.Month })
                 .ToListAsync();
 
