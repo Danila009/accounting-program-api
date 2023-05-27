@@ -34,6 +34,28 @@ namespace Diploma.Controllers
             return await supplies.ToListAsync();
         }
 
+        [HttpGet("Analytics")]
+        public async Task<ActionResult<List<SupplyAnalyticDto>>> GetAnalytics()
+        {
+            var supplies = await _efModel.Supplies
+                .GroupBy(x => new { x.DateTime.Year, x.DateTime.Month })
+                .ToListAsync();
+
+            var analytics = new List<SupplyAnalyticDto>();
+
+            foreach(var item in supplies)
+            {
+                analytics.Add(new SupplyAnalyticDto
+                {
+                    Montch = item.First().DateTime.Month,
+                    Year = item.First().DateTime.Year,
+                    Count = item.Count(),
+                });
+            }
+
+            return analytics;
+        }
+
         [Authorize(Roles = "EmployeeUser,ProviderUser,AdminUser")]
         [HttpPost]
         public async Task<ActionResult<Supply>> Add(CreateSupplyDto dto)

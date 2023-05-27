@@ -1,5 +1,6 @@
 ﻿using Diploma.Database;
 using Diploma.model.order;
+using Diploma.model.supply;
 using Diploma.model.user;
 using Diploma.model.warehouse;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,28 @@ namespace Diploma.Controllers
             }
 
             return await orders.ToListAsync();
+        }
+
+        [HttpGet("Analytics")]
+        public async Task<ActionResult<List<SupplyAnalyticDto>>> GetAnalytics()
+        {
+            var supplies = await _efModel.Orders
+                .GroupBy(x => new { x.DateTime.Year, x.DateTime.Month })
+                .ToListAsync();
+
+            var analytics = new List<SupplyAnalyticDto>();
+
+            foreach (var item in supplies)
+            {
+                analytics.Add(new SupplyAnalyticDto
+                {
+                    Montch = item.First().DateTime.Month,
+                    Year = item.First().DateTime.Year,
+                    Count = item.Count(),
+                });
+            }
+
+            return analytics;
         }
 
         [Authorize]
